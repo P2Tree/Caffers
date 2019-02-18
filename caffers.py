@@ -21,7 +21,12 @@ def run():
         while select_item != '0':
             if select_item == '1':
                 interface.go_add_question()
-                return
+                res = input("继续添加？[y/n]")
+                while res == 'y':
+                    interface.go_add_question()
+                    res = input("继续添加？[y/n]")
+
+                break
             else:
                 print("输入序号不合法")
                 select_item = input("请输入序号：")

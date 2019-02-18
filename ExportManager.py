@@ -16,15 +16,16 @@ class Export():
                 'markdown.extensions.toc']
 
         html = '''
-            <html lang="zh-cn">
-            <head>
-            <meta content="text/html; charset=utf-8" http-equiv="content-type" />
-            <link href="../../Render/misty-light.css" rel="stylesheet">
-            </head>
-            <body>
-            %s
-            </body>
-            </html>
+<html lang="zh-cn">
+<head>
+<title>Caffers</title>
+<meta content="text/html; charset=utf-8" http-equiv="content-type" />
+<link href="../../Render/misty-light.css" rel="stylesheet">
+</head>
+<body bgcolor="#FCFDF7">
+%s
+</body>
+</html>
             '''
 
         #<link href="default.css" rel="stylesheet">
