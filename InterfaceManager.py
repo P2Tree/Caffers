@@ -2,21 +2,21 @@
 from ModuleManager import Module
 from DiaryManager import Diary
 from ExportManager import Export
-from configparser import ConfigParser
+from StatisticManager import Statistic
 import os
 
 class Interface():
 
-    def __init__(self):
+    def __init__(self, path):
         print("[LOG] arguments input")
         self.questions = []
         self.number = 0
-        cfg = ConfigParser()
-        cfg.read(os.environ['HOME'] + '/.caffers.conf')
-        self.path = cfg.get('installation', 'path')
+        self.path = path
         self.module_path = self.path
         self.module_name = "ModuleFile"
         self.diary_path = self.path + "Diary/"
+        self.statistic_path = self.path
+        self.statistic_name = "StatisticFile"
 
     def add_diary(self):
         self.catch_module()
@@ -25,6 +25,8 @@ class Interface():
 
         if diary == -1:
             return
+
+        self.statistic(diary.get_diary_name())
 
         self.export(diary)
 
@@ -41,6 +43,7 @@ class Interface():
 
         diary = Diary(self.diary_path)
         res = diary.new_diary()
+
         if res == -1:
             return -1
         elif res == 1:
@@ -53,7 +56,7 @@ class Interface():
 
         print("完成回答")
 
-        diary.show()
+        diary.show(diary.get_diary_name())
 
         return diary
 
@@ -63,6 +66,14 @@ class Interface():
 
         export = Export()
         export.export_html(diary.diary_name)
+
+
+    def statistic(self, diary_name):
+
+        statistic = Statistic(self.statistic_path, self.statistic_name)
+        statistic.add_diary(diary_name)
+
+        # TODO: 删除日记时对应的这里也要修改
 
 
     def go_add_question(self):

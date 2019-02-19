@@ -1,15 +1,12 @@
 
 import datetime
 import os
+from StatisticManager import Statistic
 
 class Diary():
     def __init__(self, path):
         self.diary_path = path
         self.diary_name = None
-
-    def new_diary(self):
-        self.diary_name = "diary-" + datetime.datetime.now().strftime("%Y-%m-%d") + ".md"
-
         if not os.path.exists(self.diary_path):
             print("[LOG] Diary path is not existed")
             try:
@@ -17,7 +14,10 @@ class Diary():
                 print("[LOG] Create new Diary path, done")
             except IOError:
                 print("[ERROR] Create new Diary path failed")
-                return -1
+                raise IOError
+
+    def new_diary(self):
+        self.diary_name = "diary-" + datetime.datetime.now().strftime("%Y-%m-%d") + ".md"
 
         if os.path.exists(self.diary_path + self.diary_name):
             print(datetime.datetime.now().strftime("%Y年%m月%d日") + "的日记已经存在")
@@ -28,25 +28,26 @@ class Diary():
         try:
             with open(self.diary_path + self.diary_name, 'w') as diary:
                 diary.write(render.header_1(datetime.datetime.now().strftime("%Y年%m月%d日") + "\n"))
-            return 0
         except IOError:
             print("[ERROR] diary create failed")
             return -1
 
+        return 0
 
     '''
         展示当前日记
     '''
-    def show(self):
+    def show(self, diary_name):
         try:
             print("*****")
-            with open(self.diary_path + self.diary_name, 'r') as diary:
+            with open(self.diary_path + diary_name, 'r') as diary:
                 for line in diary.readlines():
                     print(line, end="")
             print("\n*****")
 
         except FileNotFoundError:
-            print("[Error] Diary of " + datetime.datetime.now().strftime("%Y/%m/%d") + " is Not Existed")
+            print("[Error] " + datetime.datetime.now().strftime("%Y年%m月%d日") + " 不存在")
+
 
     '''
         追加新的回答到当前日记
@@ -62,6 +63,9 @@ class Diary():
         except FileNotFoundError:
             print("[Error] Diary of " + datetime.datetime.now().strftime("%Y/%m/%d") + " is Not Existed")
             return False
+
+    def get_diary_name(self):
+        return self.diary_name
 
 class Render():
     def header_1(self, content):
