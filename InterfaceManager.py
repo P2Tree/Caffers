@@ -76,12 +76,6 @@ class Interface():
         # TODO: 删除日记时对应的这里也要修改
 
 
-    def go_add_question(self):
-        print("go_add_question")
-        module = Module(self.module_path, self.module_name)
-        question = input("请输入需要添加的问题：")
-        module.add_question(question)
-        print("添加成功")
 
     def go_change_password(self):
         print("go_change_password")
