@@ -7,6 +7,10 @@ class Module():
         self.module_path = path
         self.module_name = name
 
+        if not os.path.exists(self.module_path + self.module_name):
+            print("[LOG] can't find module file")
+            self.create_module()
+
     def create_module(self):
         if not os.path.exists(self.module_path):
             try:
@@ -28,54 +32,65 @@ class Module():
 
 
     def get_questions(self):
-        try:
-            with open(self.module_path + self.module_name, 'rU') as module:
-                questions = module.readlines()
-                number = len(questions) # total number of questions
-            return questions, number
+        with open(self.module_path + self.module_name, 'r') as module:
+            questions = yaml.load(module)
 
-        except FileNotFoundError:
-            print("[ERROR] can't find module file")
+        if questions is None:
+            raise Exception("模板文件内容为空")
+
+        qlist = []
+        for q in questions:
+            print(q + ": " + questions[q])
+            qlist.append(questions[q])
+
+        number = len(qlist)
+        return qlist, number
 
 
     def add_question(self, question):
 
-        if not os.path.exists(self.module_path + self.module_name):
-            print("[LOG] can't find module file")
-            self.create_module()
+        with open(self.module_path + self.module_name, 'r') as module:
+            questions = yaml.load(module)
 
-        with open(self.module_path + self.module_name, 'a') as module:
-            module.write(question + "\n")
+        number = len(questions)
+        questions["Q"+str(number+1)] = question
+
+        with open(self.module_path + self.module_name, 'w') as module:
+            yaml.dump(questions, module, default_flow_style=False)
+
 
     def show_all_questions(self):
         with open(self.module_path + self.module_name, 'r') as module:
             questions = yaml.load(module)
 
+        if questions is None:
+            raise Exception("模板文件内容为空")
+
         for q in questions:
             print(q + ": " + questions[q])
 
     def change_question(self, item_number, question):
-        # TODO: yaml文件的写入仍然有问题
         qlist = self.get_questions_item_list()
 
         if item_number not in qlist:
             raise Exception("[ERROR] 输入问题序号错误")
 
-        questions = dict()
         try:
-            with open(self.module_path + self.module_name, 'w') as module:
+            with open(self.module_path + self.module_name, 'r') as module:
+                questions = yaml.load(module)
                 questions[item_number] = question
-                module.write(yaml.dump(questions))
+            with open(self.module_path + self.module_name, 'w') as module:
+                yaml.dump(questions, module, default_flow_style=False)
         except:
             raise
-        finally:
-            print("修改完毕")
-
 
 
     def get_questions_item_list(self):
         with open(self.module_path + self.module_name, 'r') as module:
             questions = yaml.load(module)
+
+        if questions is None:
+            raise Exception("模板文件内容为空")
 
         qlist = []
         for q in questions:

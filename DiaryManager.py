@@ -56,9 +56,8 @@ class Diary():
         render = Render()
         try:
             with open(self.diary_path + self.diary_name, 'a') as diary:
-                diary.write(render.header_2(question))
-                diary.write(render.blockquote(answer))
-                diary.write("\n")
+                diary.write(render.header_2(question) + "\n")
+                diary.write(render.blockquote(answer) + "\n")
             return True
         except FileNotFoundError:
             print("[Error] Diary of " + datetime.datetime.now().strftime("%Y/%m/%d") + " is Not Existed")
